@@ -1,5 +1,5 @@
 import React from "react";
-import { data } from "../src/data";
+import { data } from "./data";
 import Split from "react-split";
 import Editor from '../src/components/Editor';
 import Sidebar from '../src/components/Sidebar';
@@ -18,7 +18,6 @@ export default function App() {
     
     React.useEffect(() => {
         localStorage.setItem("notes", JSON.stringify(notes))
-        console.log(notes[0].body.split("\n"))
     }, [notes])
 
     function createNewNote() {
@@ -29,7 +28,7 @@ export default function App() {
         setNotes(prevNotes => [newNote, ...prevNotes])
         setCurrentNoteId(newNote.id)
     }
-    
+
     function updateNote(text) {
         //Rearrange the notes so that the most recently-modified will be at the top
 
@@ -56,6 +55,12 @@ export default function App() {
         })) */
     }
     
+    function deleteNote(event, noteId) {
+        event.stopPropagation()
+        setNotes(oldNotes => oldNotes.filter(note => note.id !== noteId))
+    }
+    
+
     function findCurrentNote() {
         return notes.find(note => {
             return note.id === currentNoteId
@@ -77,6 +82,7 @@ export default function App() {
                     currentNote={findCurrentNote()}
                     setCurrentNoteId={setCurrentNoteId}
                     newNote={createNewNote}
+                    deleteNote={deleteNote}
                 />
                 {
                     currentNoteId && 
